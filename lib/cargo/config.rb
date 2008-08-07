@@ -29,7 +29,7 @@ module Cargo
         :created_at => :datetime,
         :updated_at => :datetime
       }
-      table_name = Cargo::CargoFile.table_name
+      self.table_name = Cargo::CargoFile.table_name
       yield(self) if block_given?
       Cargo.config = self
     end
