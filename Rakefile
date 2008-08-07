@@ -3,10 +3,9 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 
 module Cargo
-  NAME            = 'cargo'
-  VERSION         = '0.2.5'
-  GEM_NAME        = "#{NAME}-#{VERSION}.gem"
-  GEM_NAME_REGEXP = "#{NAME}-[0-9.]\+gem"
+  NAME     = 'cargo'
+  VERSION  = '0.2.5'
+  GEM_NAME = "#{NAME}-#{VERSION}.gem"
 end
 
 # Packaging
@@ -18,7 +17,8 @@ spec = Gem::Specification.new do |s|
   s.author      = 'Sam Kirchmeier'
   s.email       = 'sam.kirchmeier@gmail.com'
   s.homepage    = 'http://code.yieldself.com/doc/cargo/'
-  s.summary     = 'Active Record exension to support files saved outside the db.'
+  s.summary     = 'An Active Record extension that provides a basic way to ' \
+                  'save file data along side an Active Record object'
   s.description = s.summary
   s.add_dependency('activerecord', '>= 2.0.2')
   s.require_path = 'lib'
