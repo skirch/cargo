@@ -23,8 +23,6 @@ module Cargo
   #   @image.thumbnail.destroy
   #
   class CargoFile < ActiveRecord::Base
-    set_table_name Cargo.config.table_name
-
     belongs_to :parent, :polymorphic => true
 
     validate_on_create :file_data_exists

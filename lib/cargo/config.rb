@@ -4,10 +4,10 @@ module Cargo
     attr_accessor :file_path
 
     # The name of the table that will store file metadata in the database
-    attr_accessor :table_name
+    attr_reader :table_name
 
     # Used to specify the subdirectory for <tt>CargoFile.relative_url</tt>
-    attr_accessor :url_subdir
+    attr_writer :url_subdir
 
     # Sets the default value for <tt>table_name</tt> and assigns itself to
     # <tt>Cargo.config</tt>. It also yields itself if a block is provided.
@@ -19,7 +19,6 @@ module Cargo
     #   end
     #
     def initialize
-      @table_name = 'cargo_files'
       @table_columns = {
         :parent_id => :integer,
         :parent_type => :string,
@@ -30,11 +29,21 @@ module Cargo
         :created_at => :datetime,
         :updated_at => :datetime
       }
+      table_name = Cargo::CargoFile.table_name
       yield(self) if block_given?
       Cargo.config = self
     end
 
-    def url_subdir # :nodoc:
+    # Specify the name of the table that will store file metadata
+    #
+    def table_name=(name)
+      @table_name = name
+      Cargo::CargoFile.set_table_name(name)
+    end
+
+    # Specifies the public subdirectory for <tt>CargoFile.relative_url</tt>
+    #
+    def url_subdir
       @url_subdir || raise(Errors::UrlSubdirNotSet)
     end
 
