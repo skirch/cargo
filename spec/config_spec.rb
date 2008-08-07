@@ -16,7 +16,7 @@ end
 describe 'Using cargo with an invalid database' do
   it 'should raise TableDoesNotExist' do
     old_table_name = Cargo.config.table_name
-    Cargo.config.table_name = 'nonexistant'
+    Cargo.config.table_name = 'nonexistent'
     proc do
       class InvalidModel < ActiveRecord::Base
         cargo :file
