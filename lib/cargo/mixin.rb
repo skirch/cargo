@@ -30,8 +30,10 @@ module Cargo
 
       extend Validations
 
-      has_one name, :as => :parent, :conditions => { :name => name.to_s },
-        :class_name => 'Cargo::CargoFile', :dependent => :destroy
+      has_one name, :as => :parent, :class_name => 'Cargo::CargoFile',
+        :conditions => { :"#{Cargo.config.table_name}.name" => name.to_s },
+        :dependent => :destroy
+
 
       before_save Cargo::CallbackHandler.new(name)
       after_save Cargo::CallbackHandler.new(name)
