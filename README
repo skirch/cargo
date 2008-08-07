@@ -1,0 +1,91 @@
+= cargo
+
+cargo is an Active Record extension that provides a basic way to save file
+data along side an Active Record object. For example, if you have an image model
+and need to save image data outside of your database, cargo can help.
+
+== Getting Started
+
+=== Installation
+
+  $ gem install cargo --source http://code.yieldself.com/
+
+=== Setup
+
+Before you use cargo, you need to set <tt>Cargo.config.file_path</tt> so it
+knows where to save files. This is normally done in Rails' environment.rb.
+
+  Rails::Initializer.run do |config|
+    config.gem 'cargo', :source => 'http://code.yieldself.com'
+  end
+
+  Cargo.config.file_path = '/var/files'
+
+Create a migration for the table that will store file metadata. The table is
+called <tt>external_files</tt> by default, but you can change the name via
+<tt>Cargo.config.table_name</tt>.
+
+  $ script/generate migration CreateExternalFiles
+
+Edit the migration to create the required table and columns.
+
+  class CreateExternalFiles < ActiveRecord::Migration
+    def self.up
+      create_table :external_files do |t|
+        t.integer :parent_id
+        t.string :parent_type
+        t.string :extension
+        t.string :key
+        t.timestamps
+      end
+    end
+
+    def self.down
+      drop_table :external_files
+    end
+  end
+
+Run the migration.
+
+ $ rake db:migrate
+
+=== Example
+
+  class Image < ActiveRecord::Base
+    cargo :file
+  end
+
+When you create a new Image object, cargo will provide you with an easy way
+to save the image file.
+
+  @image = Image.new
+  @image.set_file('path/to/file.jpg')
+  @image.save
+
+Access the image file like so:
+
+  @image.file.filename
+  # => "00_00_01_4b2xu3.jpg"
+
+  @image.file.absolute_filename
+  # => "/var/files/images/00/00/00_00_01_4b2xu3.jpg"
+
+Filenames are created automatically. cargo takes care of naming files and
+limits the maximum number of files per directory. Files are deleted when
+objects are destroyed.
+
+== Source Code
+
+Browse the source code via gitweb:
+
+* http://code.yieldself.com/git/?p=cargo.git;a=tree
+
+Patches and contributions are welcome. Source code is available via git:
+
+  $ git clone http://code.yieldself.com/git/cargo.git cargo
+
+== License
+
+cargo is distributed under the MIT License.
+
+Copyright (c) 2008 Sam Kirchmeier
