@@ -1,10 +1,10 @@
 require 'tempfile'
 
 module Cargo
-  # ExternalFile is an Active Record model that is associated to the model that
+  # CargoFile is an Active Record model that is associated to the model that
   # calls <tt>cargo</tt> via Active Record's <tt>has_one</tt> association.
   #
-  # For example, the following class definition will attach two ExternalFiles
+  # For example, the following class definition will attach two CargoFiles
   # to each Image object.
   #
   #   class Image < ActiveRecord::Base
@@ -16,13 +16,13 @@ module Cargo
   # other <tt>has_one</tt> association.
   #
   #   @image = Image.find(:first)
-  #   @image.original                 # => #<Cargo::ExternalFile>
+  #   @image.original                 # => #<Cargo::CargoFile>
   #   @image.original.filename        # => "00_02_bz_myk25s.jpg"
   #
   #   # All the usual has_one methods work too.
   #   @image.thumbnail.destroy
   #
-  class ExternalFile < ActiveRecord::Base
+  class CargoFile < ActiveRecord::Base
     set_table_name Cargo.config.table_name
 
     belongs_to :parent, :polymorphic => true
@@ -109,6 +109,14 @@ module Cargo
     end
 
     # Generates a relative url for this file based on <tt>config.url_subdir</tt>
+    #
+    # ==== Example
+    #
+    #   Cargo.config.url_subdir = '/files'
+    #
+    #   @image = Image.find(:first)
+    #   @image.original.relative_url
+    #   # => "/files/images/00/00/00_00_01_4b2xu3.jpg"
     #
     def relative_url
       mtime = File.mtime(absolute_filename).to_i.to_s

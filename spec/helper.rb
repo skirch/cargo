@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.timestamps
   end
 
-  create_table('external_files_invalid_columns') do |t|
+  create_table('cargo_files_invalid_columns') do |t|
     t.string :parent_id
     t.string :parent_type
     t.string :name
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.timestamps
   end
 
-  create_table('external_files_missing_columns') { }
+  create_table('cargo_files_missing_columns') { }
 
   create_table(:foos) { }
 end

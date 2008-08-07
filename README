@@ -1,8 +1,18 @@
-= cargo
+= Cargo
 
-cargo is an Active Record extension that provides a basic way to save file
+Cargo is an Active Record extension that provides a basic way to save file
 data along side an Active Record object. For example, if you have an image model
-and need to save image data outside of your database, cargo can help.
+and need to save image data outside of your database, Cargo can help.
+
+== Motivation
+
+There are many alternatives to Cargo if you're looking for an Active Record
+plugin to handle your file attachments. Here are some of Cargo's strengths:
+
+* Cargo is lightweight and focused
+* No dependencies besides Active Record
+* Minimal namespace pollution
+* Requires minimal configuration
 
 == Getting Started
 
@@ -12,7 +22,7 @@ and need to save image data outside of your database, cargo can help.
 
 === Setup
 
-Before you use cargo, you need to set <tt>Cargo.config.file_path</tt> so it
+Before you use Cargo, you need to set <tt>Cargo.config.file_path</tt> so it
 knows where to save files. This is normally done in Rails' environment.rb.
 
   Rails::Initializer.run do |config|
@@ -22,26 +32,28 @@ knows where to save files. This is normally done in Rails' environment.rb.
   Cargo.config.file_path = '/var/files'
 
 Create a migration for the table that will store file metadata. The table is
-called <tt>external_files</tt> by default, but you can change the name via
+called <tt>cargo_files</tt> by default, but you can change the name via
 <tt>Cargo.config.table_name</tt>.
 
-  $ script/generate migration CreateExternalFiles
+  $ script/generate migration CreateCargoFiles
 
 Edit the migration to create the required table and columns.
 
-  class CreateExternalFiles < ActiveRecord::Migration
+  class CreateCargoFiles < ActiveRecord::Migration
     def self.up
-      create_table :external_files do |t|
+      create_table :cargo_files do |t|
         t.integer :parent_id
         t.string :parent_type
-        t.string :extension
+        t.string :name
         t.string :key
+        t.string :extension
+        t.string :original_filename
         t.timestamps
       end
     end
 
     def self.down
-      drop_table :external_files
+      drop_table :cargo_files
     end
   end
 
@@ -55,7 +67,7 @@ Run the migration.
     cargo :file
   end
 
-When you create a new Image object, cargo will provide you with an easy way
+When you create a new Image object, Cargo will provide you with an easy way
 to save the image file.
 
   @image = Image.new
@@ -70,7 +82,7 @@ Access the image file like so:
   @image.file.absolute_filename
   # => "/var/files/images/00/00/00_00_01_4b2xu3.jpg"
 
-Filenames are created automatically. cargo takes care of naming files and
+Filenames are created automatically. Cargo takes care of naming files and
 limits the maximum number of files per directory. Files are deleted when
 objects are destroyed.
 
@@ -86,6 +98,6 @@ Patches and contributions are welcome. Source code is available via git:
 
 == License
 
-cargo is distributed under the MIT License.
+Cargo is distributed under the MIT License.
 
 Copyright (c) 2008 Sam Kirchmeier

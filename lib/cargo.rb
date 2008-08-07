@@ -4,7 +4,7 @@ require 'active_record'
 require 'cargo/callback_handler'
 require 'cargo/config'
 require 'cargo/errors'
-require 'cargo/external_file'
+require 'cargo/cargo_file'
 require 'cargo/mixin'
 require 'cargo/validations'
 

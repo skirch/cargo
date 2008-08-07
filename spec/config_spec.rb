@@ -27,7 +27,7 @@ describe 'Using cargo with an invalid database' do
 
   it 'should raise MissingRequiredColumn' do
     old_table_name = Cargo.config.table_name
-    Cargo.config.table_name = 'external_files_missing_columns'
+    Cargo.config.table_name = 'cargo_files_missing_columns'
     proc do
       class InvalidModel < ActiveRecord::Base
         cargo :file
@@ -38,7 +38,7 @@ describe 'Using cargo with an invalid database' do
 
   it 'should raise InvalidColumn' do
     old_table_name = Cargo.config.table_name
-    Cargo.config.table_name = 'external_files_invalid_columns'
+    Cargo.config.table_name = 'cargo_files_invalid_columns'
     proc do
       class InvalidModel < ActiveRecord::Base
         cargo :file

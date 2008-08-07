@@ -6,7 +6,7 @@ module Cargo
     # The name of the table that will store file metadata in the database
     attr_accessor :table_name
 
-    # Used to specify the subdirectory for <tt>ExternalFile.relative_url</tt>
+    # Used to specify the subdirectory for <tt>CargoFile.relative_url</tt>
     attr_accessor :url_subdir
 
     # Sets the default value for <tt>table_name</tt> and assigns itself to
@@ -15,11 +15,11 @@ module Cargo
     #   Cargo::Config.new |config|
     #     config.table_name = 'files'
     #     config.file_path = '/var/files'
-    #     config.url_subdir = '/path/to/files/online'
+    #     config.url_subdir = '/public/path/to/files/online'
     #   end
     #
     def initialize
-      @table_name = 'external_files'
+      @table_name = 'cargo_files'
       @table_columns = {
         :parent_id => :integer,
         :parent_type => :string,

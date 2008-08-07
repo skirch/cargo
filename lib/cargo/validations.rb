@@ -34,7 +34,7 @@ module Cargo
       options[:message] ||= 'does not have a valid file extension'
       send(validation_method(options[:on] || :save), options) do |record|
         file = record.send(name)
-        if file.is_a?(ExternalFile)
+        if file.is_a?(CargoFile)
           ext = file.extension
           ext.downcase! unless ext.nil?
           if !options[:in].include?(ext)
@@ -74,7 +74,7 @@ module Cargo
       send(validation_method(options[:on] || :save), options) do |record|
         file = record.send(name)
         record.errors.add(name, options[:message]) if
-          !file.is_a?(ExternalFile) ||
+          !file.is_a?(CargoFile) ||
           (file.new_record? && !file.new_data?) ||
           (!file.new_record? && !File.exist?(file.absolute_filename))
       end
