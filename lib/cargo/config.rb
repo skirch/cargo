@@ -43,6 +43,11 @@ module Cargo
 
     # Specifies the public subdirectory for <tt>CargoFile.relative_url</tt>
     #
+    # ==== Raises
+    #
+    # [Errors::UrlSubdirNotSet]
+    #   Raised when called before <tt>Cargo.config.url_subdir</tt> is set
+    #
     def url_subdir
       @url_subdir || raise(Errors::UrlSubdirNotSet)
     end
@@ -53,11 +58,19 @@ module Cargo
     #
     # ==== Raises
     #
-    # [Errors::TableDoesNotExist]
-    #   Raised when the table specified by <tt>table_name</tt> does not exist
-    #
     # [Errors::FilePathNotSet]
     #   Raised when <tt>cargo</tt> is used before <tt>file_path</tt> is set
+    #
+    # [Errors::InvalidColumn]
+    #   Raised when <tt>cargo</tt> is used when the table specified by
+    #   <tt>table_name</tt> has an invalid column
+    #
+    # [Errors::MissingRequiredColumn]
+    #   Raised when <tt>cargo</tt> is used when the table specified by
+    #   <tt>table_name</tt> is missing a required column
+    #
+    # [Errors::TableDoesNotExist]
+    #   Raised when the table specified by <tt>table_name</tt> does not exist
     #
     def verify!(connection)
       raise(Errors::TableDoesNotExist) if !connection.table_exists?(@table_name)
@@ -83,7 +96,4 @@ module Cargo
       Hash[*columns.map { |column| [column.name.to_sym, column.type] }.flatten]
     end
   end
-
-  mattr_accessor :config
-  Config.new
 end
