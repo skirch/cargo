@@ -33,28 +33,28 @@ module Cargo
 
     before_destroy :remove_file_and_empty_directories
 
-    # Combines <tt>absolute_path</tt> and <tt>filename</tt> to return the full
-    # path to this file
+    # Combines <tt>dirname</tt> and <tt>filename</tt> to return the full path to
+    # this file
     #
     # ==== Example
     #
     #   @image = Image.find(:first)
-    #   @image.original.absolute_filename
+    #   @image.original.path
     #   # => "/var/files/images/00/00/00_00_01_4b2xu3.jpg"
     #
-    def absolute_filename
-      File.join(absolute_path, filename)
+    def path
+      File.join(dirname, filename)
     end
 
-    # Returns the path to this file on disk
+    # Returns the directory of this file on disk
     #
     # ==== Example
     #
     #   @image = Image.find(:first)
-    #   @image.original.absolute_path
+    #   @image.original.dirname
     #   # => "/var/files/images/00/00"
     #
-    def absolute_path
+    def dirname
       File.join(Cargo.config.file_path, subdir)
     end
 
@@ -91,7 +91,7 @@ module Cargo
     #
     #   @image.original.filename           # => "00_02_bz_myk25s.jpg"
     #   @image.original.subdir             # => "images/00/02"
-    #   @image.original.absolute_filename
+    #   @image.original.path
     #   # => "/var/files/images/00/02/00_02_bz_myk25s.jpg"
     #
     def filename
@@ -117,7 +117,7 @@ module Cargo
     #   # => "/files/images/00/00/00_00_01_4b2xu3.jpg"
     #
     def relative_url
-      mtime = File.mtime(absolute_filename).to_i.to_s
+      mtime = File.mtime(path).to_i.to_s
       url = []
       url << Cargo.config.url_subdir
       url << subdir.split(File::SEPARATOR)
@@ -199,8 +199,8 @@ module Cargo
       id_in_base_36_parts.join('_')
     end
 
-    def create_path
-      FileUtils.mkdir_p(absolute_path)
+    def create_directory
+      FileUtils.mkdir_p(dirname)
     end
 
     def file_data_exists
@@ -232,7 +232,7 @@ module Cargo
     end
 
     def remove_empty_directories
-      dirs = absolute_path.split(File::SEPARATOR)
+      dirs = dirname.split(File::SEPARATOR)
       subdir.split(File::SEPARATOR).length.times do
         begin
           FileUtils.rmdir(dirs.join(File::SEPARATOR))
@@ -248,7 +248,7 @@ module Cargo
     # base_filename to identify the file.
     #
     def remove_existing_file
-      existing = Dir[File.join(absolute_path, "#{base_filename}*")].first
+      existing = Dir[File.join(dirname, "#{base_filename}*")].first
       FileUtils.rm_f(existing) unless existing.nil?
     end
 
@@ -256,16 +256,16 @@ module Cargo
     # the file was created
     #
     def remove_file_and_empty_directories
-      FileUtils.rm_f(absolute_filename)
+      FileUtils.rm_f(path)
       remove_empty_directories
     end
 
     def save_file_if_new_data
       if new_data?
-        create_path
+        create_directory
         remove_existing_file
         @tempfile.rewind
-        File.open(absolute_filename, 'w') do |f|
+        File.open(path, 'w') do |f|
           f.write(@tempfile.read)
         end
         @tempfile.close!

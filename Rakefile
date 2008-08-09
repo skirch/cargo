@@ -4,7 +4,7 @@ require 'rake/rdoctask'
 
 module Cargo
   NAME     = 'cargo'
-  VERSION  = '0.2.5'
+  VERSION  = '0.3.0'
   GEM_NAME = "#{NAME}-#{VERSION}.gem"
 end
 
@@ -23,11 +23,11 @@ spec = Gem::Specification.new do |s|
   s.add_dependency('activerecord', '>= 2.0.2')
   s.require_path = 'lib'
   s.files =
-    %w(LICENSE README Rakefile) +
+    %w(CHANGELOG LICENSE README Rakefile) +
     FileList['lib/**/*.rb'] +
     FileList['spec/**/*.rb']
   s.has_rdoc = true
-  s.extra_rdoc_files = %w(README LICENSE)
+  s.extra_rdoc_files = %w(CHANGELOG README LICENSE)
   s.rdoc_options |= %w(--inline-source --line-numbers --main README)
 end
 
@@ -58,7 +58,7 @@ end
 # Documentation
 
 Rake::RDocTask.new do |rdoc|
-  files = %w(README LICENSE lib/**/*.rb)
+  files = %w(CHANGELOG README LICENSE lib/**/*.rb)
   rdoc.rdoc_files.add(files)
   rdoc.main = 'README'
   rdoc.title = 'Cargo Documentation'

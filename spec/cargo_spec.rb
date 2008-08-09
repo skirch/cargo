@@ -28,30 +28,30 @@ describe 'A model using cargo' do
 
   it 'should save file on save' do
     @model.save.should be_true
-    File.exist?(@model.file.absolute_filename).should be_true
+    File.exist?(@model.file.path).should be_true
   end
 
   it 'should destroy file on destroy' do
     @model.save.should be_true
-    File.exist?(@model.file.absolute_filename).should be_true
+    File.exist?(@model.file.path).should be_true
     @model.destroy
-    File.exist?(@model.file.absolute_filename).should be_false
+    File.exist?(@model.file.path).should be_false
   end
 
   it 'should remove empty directories on destroy' do
     @model.save.should be_true
-    file_count(@model.file.absolute_path).should equal(1)
+    file_count(@model.file.dirname).should equal(1)
     @model.destroy
-    File.exist?(@model.file.absolute_path).should be_false
+    File.exist?(@model.file.dirname).should be_false
   end
 
   it 'should not remove non-empty directories on destroy' do
     @model.save.should be_true
-    other = File.join(@model.file.absolute_path, 'other_file')
+    other = File.join(@model.file.dirname, 'other_file')
     FileUtils.touch(other)
-    file_count(@model.file.absolute_path).should equal(2)
+    file_count(@model.file.dirname).should equal(2)
     @model.destroy
-    file_count(@model.file.absolute_path).should equal(1)
+    file_count(@model.file.dirname).should equal(1)
     FileUtils.rm(other)
   end
 
@@ -70,10 +70,10 @@ describe 'A model using cargo' do
       @model.file.subdir
     end.should raise_error(Cargo::Errors::CannotGenerateFilename)
     proc do
-      @model.file.absolute_filename
+      @model.file.path
     end.should raise_error(Cargo::Errors::CannotGenerateFilename)
     proc do
-      @model.file.absolute_path
+      @model.file.dirname
     end.should raise_error(Cargo::Errors::CannotGenerateFilename)
   end
 
@@ -94,24 +94,24 @@ describe 'A model using cargo' do
 
   it 'should remove existing file when saving a new file' do
     @model.save.should be_true
-    file_count(@model.file.absolute_path).should equal(1)
+    file_count(@model.file.dirname).should equal(1)
     original_filename = @model.file.filename
     @model.file.set(snail('png'))
     @model.file.save.should be_true
     @model.file.filename.should_not eql(original_filename)
-    file_count(@model.file.absolute_path).should equal(1)
+    file_count(@model.file.dirname).should equal(1)
   end
 
   it 'should allow set to handle filename strings and file objects' do
     @model.save.should be_true
-    file_count(@model.file.absolute_path).should equal(1)
+    file_count(@model.file.dirname).should equal(1)
     original_filename = @model.file.filename
     File.open(snail('png'), 'r') do |f|
       @model.file.set(f)
     end
     @model.save.should be_true
     @model.file.filename.should_not eql(original_filename)
-    file_count(@model.file.absolute_path).should equal(1)
+    file_count(@model.file.dirname).should equal(1)
   end
 
   it 'should raise UrlSubdirNotSet if it\'s not' do

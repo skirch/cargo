@@ -1,0 +1,9 @@
+= Cargo Changelog
+
+== 0.3.0, 2008-08-08
+
+* Updated CargoFile methods to be more like standard File class methods
+
+== 0.2.5, 2008-08-07
+
+* Initial public release

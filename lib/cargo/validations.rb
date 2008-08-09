@@ -32,7 +32,7 @@ module Cargo
         record.errors.add(name, options[:message]) if
           !file.is_a?(CargoFile) ||
           (file.new_record? && !file.new_data?) ||
-          (!file.new_record? && !File.exist?(file.absolute_filename))
+          (!file.new_record? && !File.exist?(file.path))
       end
     end
 
