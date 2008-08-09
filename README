@@ -27,9 +27,14 @@ knows where to save files. This is normally done in Rails' environment.rb.
 
   Rails::Initializer.run do |config|
     config.gem 'cargo', :source => 'http://code.yieldself.com'
-  end
 
-  Cargo.config.file_path = '/var/files'
+    config.after_initialize do
+      Cargo::Config.new do |config|
+        config.file_path = '/var/files'
+        config.url_subdir = '/files'
+      end
+    end
+  end
 
 Create a migration for the table that will store file metadata. The table is
 called <tt>cargo_files</tt> by default, but you can change the name via
