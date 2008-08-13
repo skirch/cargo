@@ -117,11 +117,12 @@ module Cargo
     #   # => "/files/images/00/00/00_00_01_4b2xu3.jpg"
     #
     def relative_url
-      mtime = File.mtime(path).to_i.to_s
+      mtime = File.exist?(path) ? File.mtime(path).to_i.to_s : nil
+      name = mtime ? "#{filename}?#{mtime}" : filename
       url = []
       url << Cargo.config.url_subdir
       url << subdir.split(File::SEPARATOR)
-      url << "#{filename}?#{mtime}"
+      url << name
       url.flatten.map do |s|
         s.ends_with?('/') ? s.chop : s
       end.join('/')

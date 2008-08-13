@@ -145,4 +145,11 @@ describe 'A model using cargo' do
     @model.save.should be_true
     @model.other(true).id.should_not eql(@model.file(true).id)
   end
+
+  it 'should only use mtime in relative_url if the file exists' do
+    @model.save.should be_true
+    @model.file.relative_url.should include('?')
+    @model.file.destroy
+    @model.file.relative_url.should_not include('?')
+  end
 end
