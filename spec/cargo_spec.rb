@@ -152,4 +152,21 @@ describe 'A model using cargo' do
     @model.file.destroy
     @model.file.relative_url.should_not include('?')
   end
+
+  it 'should only use callbacks if attributes hash is not frozen' do
+    # before_save calback sets name
+    # after_save callback saves associated record
+    @model.file.name.should be_nil
+    @model.file.changed?.should be_true
+    @model.save.should be_true
+    @model.file.changed?.should be_false
+    @model.file.name.should eql('file')
+    @model.file.name = nil
+    @model.file.changed?.should be_true
+    @model.file.freeze
+    @model.save.should be_true
+    # associated record is frozen and should be unsaved
+    @model.file.changed?.should be_true
+    @model.file.name.should be_nil
+  end
 end

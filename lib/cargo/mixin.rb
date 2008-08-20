@@ -34,7 +34,6 @@ module Cargo
         :conditions => { :"#{Cargo.config.table_name}.name" => name.to_s },
         :dependent => :destroy
 
-
       before_save Cargo::CallbackHandler.new(name)
       after_save Cargo::CallbackHandler.new(name)
 

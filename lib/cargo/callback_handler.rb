@@ -13,7 +13,7 @@ module Cargo
     #
     def before_save(record)
       file = record.send(@name)
-      file.name = @name.to_s if file
+      file.name = @name.to_s if file && !file.frozen?
     end
 
     # Cargo uses Active Record's has_one association. has_one automatically
@@ -27,7 +27,7 @@ module Cargo
     #
     def after_save(record)
       file = record.send(@name)
-      file.save if file && file.changed?
+      file.save if file && file.changed? && !file.frozen?
     end
   end
 end
