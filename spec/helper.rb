@@ -26,37 +26,38 @@ Cargo.config.file_path = File.join(GENERATED_DIR, 'test_files')
 
 ActiveRecord::Base.logger = Logger.new(
   File.join(GENERATED_DIR, 'active_record.log'))
-
-ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => File.join(GENERATED_DIR, 'test_data.sqlite3'))
+ActiveRecord::Base.establish_connection(:adapter => 'sqlite3',
+  :dbfile => ':memory:')
+ActiveRecord::Migration.verbose = false
 
 # create sqlite database for testing
 
-ActiveRecord::Schema.define(:version => 0) do
-  create_table(Cargo.config.table_name) do |t|
-    t.integer :parent_id
-    t.string :parent_type
-    t.string :name
-    t.string :key
-    t.string :extension
-    t.string :original_filename
-    t.timestamps
+ActiveRecord::Base.silence do
+  ActiveRecord::Schema.define(:version => 1) do
+    create_table(Cargo.config.table_name) do |t|
+      t.integer :parent_id
+      t.string :parent_type
+      t.string :name
+      t.string :key
+      t.string :extension
+      t.string :original_filename
+      t.timestamps
+    end
+
+    create_table('cargo_files_invalid_columns') do |t|
+      t.string :parent_id
+      t.string :parent_type
+      t.string :name
+      t.string :key
+      t.string :extension
+      t.string :original_filename
+      t.timestamps
+    end
+
+    create_table('cargo_files_missing_columns') { }
+
+    create_table(:foos) { }
   end
-
-  create_table('cargo_files_invalid_columns') do |t|
-    t.string :parent_id
-    t.string :parent_type
-    t.string :name
-    t.string :key
-    t.string :extension
-    t.string :original_filename
-    t.timestamps
-  end
-
-  create_table('cargo_files_missing_columns') { }
-
-  create_table(:foos) { }
 end
 
 # define Foo active record model for testing
