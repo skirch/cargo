@@ -21,10 +21,6 @@ module Cargo
     # that. This forces any file changes to be saved every time the parent
     # record is saved.
     #
-    # One weird thing is that Active Record does validate the has_one
-    # association every time, so we don't need to worry about that. Validation
-    # errors will automatically be caught before this callback.
-    #
     def after_save(record)
       file = record.send(@name)
       file.save if file && file.changed? && !file.frozen?

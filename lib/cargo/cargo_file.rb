@@ -151,25 +151,30 @@ module Cargo
     #
     # ==== Parameters
     #
-    # [file]
-    #   Either a string to specify the filename or a file object
+    # [filename_or_file]
+    #   Either a string to specify the filename or a file object. This
+    #   parameter can also be an ActionController::UploadedStringIO or
+    #   ActionController::UploadedTempfile from a Rails form post.
     #
-    def set(file)
+    def set(filename_or_file)
       @tempfile.close! if @tempfile
       @tempfile = Tempfile.new(self.class.name.demodulize.underscore)
       filename = nil
-      case
-      when file.is_a?(String)
-        filename = file
-        File.open(file, 'r') do |f|
+      case filename_or_file
+      when String
+        filename = filename_or_file
+        File.open(filename, 'r') do |f|
           @tempfile.write(f.read)
         end
-      when file.is_a?(File)
-        filename = file.path
-        @tempfile.write(file.read)
-      when file.respond_to?(:read) && file.respond_to?(:original_path)
-        filename = file.original_path
-        @tempfile.write(file.read)
+      when File
+        filename = filename_or_file.path
+        @tempfile.write(filename_or_file.read)
+      else
+        upload = filename_or_file
+        if upload.respond_to?(:original_path) && upload.respond_to?(:read)
+          filename = upload.original_path
+          @tempfile.write(upload.read)
+        end
       end
       set_metadata(filename) if new_data?
       return new_data?
@@ -281,12 +286,12 @@ module Cargo
       else
         orig = File.basename(filename) unless filename.nil?
       end
-      self.original_filename_will_change!
       self.original_filename = orig
       ext = File.extname(filename)
       ext = ext.reverse.chop.reverse if ext.starts_with?('.')
-      self.extension_will_change!
       self.extension = ext
+      self.original_filename_will_change!
+      self.extension_will_change!
     end
   end
 end
