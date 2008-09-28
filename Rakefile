@@ -4,7 +4,7 @@ require 'rake/rdoctask'
 
 module Cargo
   NAME     = 'cargo'
-  VERSION  = '0.3.0'
+  VERSION  = '0.3.1'
   GEM_NAME = "#{NAME}-#{VERSION}.gem"
 end
 
@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.summary     = 'An Active Record extension that provides a basic way to ' \
                   'save file data along side an Active Record object'
   s.description = s.summary
-  s.add_dependency('activerecord', '>= 2.0.2')
+  s.add_dependency('activerecord', '>= 2.1.1')
   s.require_path = 'lib'
   s.files =
     %w(CHANGELOG LICENSE README Rakefile) +
