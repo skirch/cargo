@@ -34,7 +34,8 @@ module Cargo
     before_destroy :remove_file_and_empty_directories
 
     # Combines <tt>dirname</tt> and <tt>filename</tt> to return the full path to
-    # this file
+    # this file. If new data has been assigned but not saved, returns the path
+    # to the temporary file.
     #
     # ==== Example
     #
@@ -43,7 +44,11 @@ module Cargo
     #   # => "/var/files/images/00/00/00_00_01_4b2xu3.jpg"
     #
     def path
-      File.join(dirname, filename)
+      if new_data?
+        @tempfile.path
+      else
+        permanent_path
+      end
     end
 
     # Returns the directory of this file on disk
@@ -231,6 +236,10 @@ module Cargo
       parts.unshift(base_36[0, base_36.length - 4])
     end
 
+    def permanent_path
+      File.join(dirname, filename)
+    end
+
     def random_key(length = 6)
       # letters and numbers except 0, 1, l, O, and vowels
       a = 'bcdfghjkmnpqrstvwxyz23456789'.split(//)
@@ -271,7 +280,7 @@ module Cargo
         create_directory
         remove_existing_file
         @tempfile.rewind
-        File.open(path, 'w') do |f|
+        File.open(permanent_path, 'w') do |f|
           f.write(@tempfile.read)
         end
         @tempfile.close!

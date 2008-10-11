@@ -4,7 +4,7 @@ require 'rake/rdoctask'
 
 module Cargo
   NAME     = 'cargo'
-  VERSION  = '0.3.1'
+  VERSION  = '0.3.2'
   GEM_NAME = "#{NAME}-#{VERSION}.gem"
 end
 

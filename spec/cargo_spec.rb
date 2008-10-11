@@ -70,11 +70,13 @@ describe 'A model using cargo' do
       @model.file.subdir
     end.should raise_error(Cargo::Errors::CannotGenerateFilename)
     proc do
-      @model.file.path
-    end.should raise_error(Cargo::Errors::CannotGenerateFilename)
-    proc do
       @model.file.dirname
     end.should raise_error(Cargo::Errors::CannotGenerateFilename)
+  end
+
+  it 'should give temp path when new_data?' do
+    @model.file.new_data?.should be_true
+    File.dirname(@model.file.path).should eql(Dir::tmpdir)
   end
 
   it 'should not create without file data' do

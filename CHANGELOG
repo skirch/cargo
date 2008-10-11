@@ -1,5 +1,9 @@
 = Cargo Changelog
 
+== 0.3.2, 2008-10-10
+
+* Exposes tempfile path before new data is saved
+
 == 0.3.1, 2008-09-28
 
 * Fixes for Active Record 2.1.1
