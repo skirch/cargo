@@ -1,5 +1,9 @@
 = Cargo Changelog
 
+== 0.3.3, 2008-11-09
+
+* Fixes writing binary files (affects Windows only)
+
 == 0.3.2, 2008-10-10
 
 * Exposes tempfile path before new data is saved

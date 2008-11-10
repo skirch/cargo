@@ -164,21 +164,22 @@ module Cargo
     def set(filename_or_file)
       @tempfile.close! if @tempfile
       @tempfile = Tempfile.new(self.class.name.demodulize.underscore)
+      @tempfile.binmode
       filename = nil
       case filename_or_file
       when String
         filename = filename_or_file
-        File.open(filename, 'r') do |f|
-          @tempfile.write(f.read)
+        File.open(filename, 'rb') do |f|
+          write_tempfile(f)
         end
       when File
         filename = filename_or_file.path
-        @tempfile.write(filename_or_file.read)
+        write_tempfile(filename_or_file)
       else
         upload = filename_or_file
         if upload.respond_to?(:original_path) && upload.respond_to?(:read)
           filename = upload.original_path
-          @tempfile.write(upload.read)
+          write_tempfile(upload)
         end
       end
       set_metadata(filename) if new_data?
@@ -279,8 +280,7 @@ module Cargo
       if new_data?
         create_directory
         remove_existing_file
-        @tempfile.rewind
-        File.open(permanent_path, 'w') do |f|
+        File.open(permanent_path, 'wb+') do |f|
           f.write(@tempfile.read)
         end
         @tempfile.close!
@@ -301,6 +301,16 @@ module Cargo
       self.extension = ext
       self.original_filename_will_change!
       self.extension_will_change!
+    end
+
+    def write_tempfile(source)
+      bytes = 8192
+      buffer = ''
+      source.rewind
+      while source.read(bytes, buffer) do
+        @tempfile.write(buffer)
+      end
+      @tempfile.rewind
     end
   end
 end
